@@ -30,7 +30,7 @@ class Heap:
 
 
     def getMax(self):
-        return self.min*self.data[0]
+        return self.data[0]
 
     def pop(self):
         tempIdx=1
@@ -48,7 +48,7 @@ class Heap:
                 self.data[biggerIdx]=self.data[biggerIdx+i]
 			   #WARNING!! Have not proofed indexing
                 self.data.pop()
-                return self.min*self.data[0]
+                return self.data[0]
 
 
 
