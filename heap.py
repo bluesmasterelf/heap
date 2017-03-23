@@ -1,7 +1,9 @@
-"""Attempting to code a max pile"""
+"""We have here a basic heap structure in the class Heap. It is structured as a max heap, and accepts a -1 to convert to a min heap for real number inputs. The class MedianHeap is a solution to the common median-tracker problem, and implements an instance of each a max and min heap. In the main program, functionality is tested. """
 from array import *
 
 class Heap:
+    """This is a basic heap data-structure. 
+    """
     def __init__(self, min=1):
         self.data=array('i', [])
         self.min=min #default to max heap, if min=-1, sorts will reverse order, only functional for real number heaps. 
@@ -33,6 +35,8 @@ class Heap:
         return self.min*self.data[0]
 
     def pop(self):
+        """This function pops the max (min) and then restores the binary tree structure.
+        """
         tempIdx=1
         biggerIdx=2
         while 2*tempIdx < len(self.data):
@@ -54,6 +58,8 @@ class Heap:
 
 
 class MedianHeap: 
+    """This structure accepts numbers and tracks their median value. 
+    """
     def __init__(self):
         self.maxHeap=Heap()
         self.minHeap=Heap(-1)
