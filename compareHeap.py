@@ -1,13 +1,15 @@
 """We have here a basic heap structure in the class Heap. It is structured as a max heap, and accepts a -1 to convert to a min heap for real number inputs. The class MedianHeap is a solution to the common median-tracker problem, and implements an instance of each a max and min heap. In the main program, functionality is tested. """
 
-class Heap:
+
+class CompareHeap:
     """This is a basic heap data-structure. 
     """
-    def __init__(self, min=1):
+    def __init__(self, min=1, comparison=None):
         self.data=[]
         self.min=min #default to max heap, if min=-1, sorts will reverse order, only functional for real number heaps. 
         #would like to implement with List of objects which can compare themselves
         #There are self comparing tuples in classInheritance.py	 
+        self.comparison=comparison
 
     def __len__(self):
         return len(self.data)
@@ -26,7 +28,7 @@ class Heap:
             else:
                 parentIdx=int((tempIdx-1)/2)
 
-            if self.data[tempIdx]>self.data[parentIdx]:
+            if self.comparison(self.data[tempIdx],self.data[parentIdx]):
                 self.data[tempIdx], self.data[parentIdx]=self.data[parentIdx], self.data[tempIdx] 
                 tempIdx=int(tempIdx/2)
             else:
@@ -42,7 +44,7 @@ class Heap:
         tempIdx=1
         biggerIdx=2
         while 2*tempIdx < len(self.data):
-            if self.data[2*tempIdx-1]>self.data[2*tempIdx]:
+            if self.comparison(self.data[2*tempIdx-1],self.data[2*tempIdx]):
                 biggerIdx=2*tempIdx
             else:
                 biggerIdx=2*tempIdx+1 #default right in the event of equality, doesn't matter unless terminal element...
