@@ -4,6 +4,7 @@
 from math import sqrt, sin, cos, atan2, pi 
 from heap import Heap, MedianHeap
 from compareHeap import CompareHeap
+import copy 
 
 class Ntuple(object):
     """Had this lovely tuple class, then discovered the existing tuple structure. This ntuple structure is specifically meant to do everything that n-ntuples in R^n do
@@ -31,15 +32,21 @@ class Ntuple(object):
         return False #equality
 
     def __rmul__(self, integer):
-        temp=self
+        temp=copy.copy(self)
         for i in range(0, self.dimension):
             temp.ntuple[i]=self.ntuple[i]*integer
         return temp
 
     def __mul__(self, integer):
-        temp=self
+        temp=copy.copy(self)
         for i in range(0, self.dimension):
             temp.ntuple[i]=self.ntuple[i]*integer
+        return temp
+
+    def __add__(self, other):
+        temp=copy.copy(self)
+        for i in range(0, self.dimension):
+            temp.ntuple[i]+=other.ntuple[i]
         return temp
 
 class OrderedPair(Ntuple):
@@ -84,7 +91,7 @@ if __name__=='__main__':
 #track their median in dictionary order x,y, test the operator overload
     maxHeap=Heap()
     compareHeap=CompareHeap(1, polarGreater)
-
+    medHeap=MedianHeap()
 #generate pairs
     testHeap=input('Do you want to test the heap? y/n')
     if testHeap=='y':
@@ -94,23 +101,28 @@ if __name__=='__main__':
                 
                 print('our newest addition is:')
                 print (test.ntuple)
-            
+                
+                medHeap.addElement(test)
                 maxHeap.addElement(test)
                 bestTuple=maxHeap.getMax()
+                medTuple=medHeap.getMedian()
                 print('the running max is:')
                 print(bestTuple.ntuple)
+                print('the running median is:')
+                print(medTuple.ntuple)
 
+    testCompare=input('Do you want to test the comparison function in a heap? y/n')
+    if testCompare=='y':
+        for i in range(-2, 2):
+            for j in range(-2, 2):
+                test=OrderedPair([j,i])
+                print('The newest point in polar is: ')
+                print(test.getPolar())
             
-    for i in range(-2, 2):
-        for j in range(-2, 2):
-            test=OrderedPair([j,i])
-            print('The newest point in polar is: ')
-            print(test.getPolar())
-            
-            compareHeap.addElement(test)
-            bestPolar=compareHeap.getMax()
-            print('The running max in polar coordinates is: ')
-            print(bestPolar.getPolar())
+                compareHeap.addElement(test)
+                bestPolar=compareHeap.getMax()
+                print('The running max in polar coordinates is: ')
+                print(bestPolar.getPolar())
 
 
 

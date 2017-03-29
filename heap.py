@@ -66,10 +66,16 @@ class MedianHeap:
         self.maxHeap=Heap()
         self.minHeap=Heap(-1)
         self.balancedState=0	#-1,0 or 1 depending if minHeap has 1 more, equal or one less than the maxHeap
-        self.median=0.0
+        self.isEmpty=True
 
     def addElement(self, element):
-        if element<self.getMedian():
+        if self.isEmpty:
+            self.minHeap.addElement(element)
+            self.balancedState-=1
+            self.isEmpty=False
+            self.median=element
+        
+        elif element<self.getMedian():
             self.maxHeap.addElement(element)
             self.balancedState+=1
         else:
@@ -84,20 +90,17 @@ class MedianHeap:
             self.minHeap.addElement(self.maxHeap.pop())
             self.balancedState-=2
 
-#adjust median to account
-        if self.balancedState==1:
-            self.median= self.maxHeap.getMax()
-        elif self.balancedState==-1:
-            self.median= self.minHeap.getMax()
-        else: 
-            self.median=(self.minHeap.getMax()+self.maxHeap.getMax())/float(2)
- 
-
     def getBalancedState(self):
         return self.balancedState
 
     def getMedian(self):
-        return self.median
+        if self.balancedState==1:
+            return self.maxHeap.getMax()
+        elif self.balancedState==-1:
+            return self.minHeap.getMax()
+        else: 
+            return (self.minHeap.getMax()+self.maxHeap.getMax())*0.5
+
 
 	 
 
