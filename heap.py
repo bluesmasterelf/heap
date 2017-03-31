@@ -1,32 +1,27 @@
 """We have here a basic heap structure in the class Heap. It is structured as a max heap, and accepts a -1 to convert to a min heap for real number inputs. The class MedianHeap is a solution to the common median-tracker problem, and implements an instance of each a max and min heap. In the main program, functionality is tested. """
 
+import operator
+
 class Heap:
     """This is a basic heap data-structure. 
     """
-    def __init__(self, min=1):
+    def __init__(self, comparison=operator.gt):  #FIX  delete reverse, integrate choose function. 
         self.data=[]
-        self.min=min #default to max heap, if min=-1, sorts will reverse order, only functional for real number heaps. 
-        #would like to implement with List of objects which can compare themselves
-        #There are self comparing tuples in classInheritance.py	 
+        self.comparison=comparison
 
     def __len__(self):
         return len(self.data)
 
     def addElement(self, number):
-        self.data.append(self.min*number)
-    #percolate up
+        self.data.append(number)  #percolate up
+        
         isSorted=False
         tempIdx = len(self.data)-1
         while not isSorted:
-            if tempIdx<=0:
-                isSorted=True
+           
+            parentIdx=int(tempIdx/2)
 
-            if (tempIdx%2)==0:
-                parentIdx=int(tempIdx/2)
-            else:
-                parentIdx=int((tempIdx-1)/2)
-
-            if self.data[tempIdx]>self.data[parentIdx]:
+            if self.comparison(self.data[tempIdx], self.data[parentIdx]):
                 self.data[tempIdx], self.data[parentIdx]=self.data[parentIdx], self.data[tempIdx] 
                 tempIdx=int(tempIdx/2)
             else:
@@ -34,15 +29,22 @@ class Heap:
 
 
     def getMax(self):
-        return self.min*self.data[0]
+        return self.data[0]
 
     def pop(self):
         """This function pops the max (min) and then restores the binary tree structure.
         """
-        tempIdx=1
-        biggerIdx=2
+
+        if len(self.data)==0:
+            raise IndexError('pop from empty heap')
+
+        tempIdx=0
+        biggerIdx=1
+
+#FIX  if empty, should throw index error: empty heap
+
         while 2*tempIdx < len(self.data):
-            if self.data[2*tempIdx-1]>self.data[2*tempIdx]:
+            if self.comparison(self.data[2*tempIdx-1], self.data[2*tempIdx]):
                 biggerIdx=2*tempIdx
             else:
                 biggerIdx=2*tempIdx+1 #default right in the event of equality, doesn't matter unless terminal element...
@@ -54,17 +56,15 @@ class Heap:
                 self.data[biggerIdx]=self.data[biggerIdx+i]
 			   #WARNING!! Have not proofed indexing
                 self.data.pop()
-                return self.min*self.data[0]
+                return self.data[0]
 
-
-#WARNING: this median heap only works with integers. Needs to be tweaked to admit other objects. In particular, the concept of negation needs to be overloaded at the very least for the construction of the min heap.
 
 class MedianHeap: 
     """This structure accepts numbers and tracks their median value. 
     """
     def __init__(self):
         self.maxHeap=Heap()
-        self.minHeap=Heap(-1)
+        self.minHeap=Heap(operator.lt)
         self.balancedState=0	#-1,0 or 1 depending if minHeap has 1 more, equal or one less than the maxHeap
         self.isEmpty=True
 
@@ -84,7 +84,7 @@ class MedianHeap:
 
 #balance the two heaps if necessary
         if self.balancedState<-1:
-            self.maxHeap.addElement(self.minHeap.pop())
+            self.maxHeap.addElement(self.reverseHeap.pop())
             self.balancedState+=2
         if self.balancedState>1:
             self.minHeap.addElement(self.maxHeap.pop())
@@ -120,10 +120,14 @@ if __name__=='__main__':
     myMaxHeap.pop()
     print (myMaxHeap.getMax())
 
+#    for i in range(5):
+#        print(myMaxHeap.pop())
+#Testing pop exception 
+
 
 #minHeap test
     print('testing minHeap, should produce 7,6,5,4')
-    myMinHeap=Heap(-1)
+    myMinHeap=Heap(operator.lt)
     for i in range(4):
         myMinHeap.addElement(7-i)
         print (myMinHeap.getMax())
